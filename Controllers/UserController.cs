@@ -20,7 +20,7 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] User user)
     {
-        var result = await _userService.RegisterUserAsync(user);
+        var result = await _userService.RegisterUserAsync(user.username, user.password);
         if (!result)
         {
             return BadRequest("Registration failed.");

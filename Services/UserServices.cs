@@ -12,17 +12,24 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public UserRepository _userRepository => new UserRepository(_context);
-
-    public async Task<bool> RegisterUserAsync(User user)
+    public async Task<bool> RegisterUserAsync(string username, string password)
     {
+        var user = new User
+        {
+            username = username,
+            nickname = username,
+            password = password,
+            balance = 0.0f
+        };
+
         try
         {
             await _userRepository.AddUser(user);
             return true;
         }
-        catch
+        catch(Exception ex)
         {
+            Console.WriteLine("Error registering user: " + ex.Message);
             return false;
         }
     }

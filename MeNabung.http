@@ -1,0 +1,6 @@
+@MeNabung_HostAddress = http://localhost:5151
+
+GET {{MeNabung_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -25,7 +25,7 @@ public class TransactionController : ControllerBase
     {
         var userIdToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         Console.Error.WriteLine("User ID from token: " + userIdToken);
-        var result = await _transactionServices.AddTransactions(request.transaction_type, request.transaction_nominal, userIdToken);
+        var result = await _transactionServices.AddTransactions(request.description, request.transaction_type, request.transaction_nominal, userIdToken);
         if (!result)
         {
             return BadRequest("Failed to add transaction.");

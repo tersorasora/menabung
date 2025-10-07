@@ -25,7 +25,7 @@ builder.Services.AddControllers();
 
 // Add Authentication
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var jwtKey = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+var jwtKey = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not found in configuration"));
 
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 {

@@ -12,10 +12,11 @@ public class TransactionServices : ITransactionServices
         _transactionRepository = transactionRepository;
     }
 
-    public async Task<bool> AddTransactions(string type, float nominal, int user_id)
+    public async Task<bool> AddTransactions(string description, string type, float nominal, int user_id)
     {
         var transaction = new Transaction
         {
+            description = description,
             transaction_type = type,
             transaction_nominal = nominal,
             user_id = user_id,

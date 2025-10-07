@@ -33,9 +33,10 @@ public class TransactionController : ControllerBase
         return Ok("Transaction added successfully.");
     }
 
-    [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetTransactionsByUserID(int userId)
+    [HttpGet("user")]
+    public async Task<IActionResult> GetTransactionsByUserID()
     {
+        var userId = int.Parse(User.FindFirst("sub")?.Value ?? "0");
         var transaction = await _transactionServices.GetTransactionsByUserIdAsync(userId);
         if (transaction == null || transaction.Count == 0) {
             return NotFound("No transactions found for this user.");

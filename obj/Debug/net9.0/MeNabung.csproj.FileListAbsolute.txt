@@ -128,3 +128,11 @@ C:\Jobs\MeNabung\obj\Debug\net9.0\refint\MeNabung.dll
 C:\Jobs\MeNabung\obj\Debug\net9.0\MeNabung.pdb
 C:\Jobs\MeNabung\obj\Debug\net9.0\MeNabung.genruntimeconfig.cache
 C:\Jobs\MeNabung\obj\Debug\net9.0\ref\MeNabung.dll
+C:\Jobs\MeNabung\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Jobs\MeNabung\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Jobs\MeNabung\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Jobs\MeNabung\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Jobs\MeNabung\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Jobs\MeNabung\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Jobs\MeNabung\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Jobs\MeNabung\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll

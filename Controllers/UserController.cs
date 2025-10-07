@@ -11,10 +11,12 @@ namespace Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IConfiguration _configuration;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IConfiguration configuration)
     {
         _userService = userService;
+        _configuration = configuration;
     }
 
     [HttpPost("register")]
@@ -31,12 +33,14 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] User loginRequest)
     {
-        var result = await _userService.LoginUserAsync(loginRequest.username, loginRequest.password);
-        if (!result)
+        var user = await _userService.LoginUserAsync(loginRequest.username, loginRequest.password);
+        if (user == null)
         {
             return Unauthorized("Invalid username or password.");
         }
-        return Ok("Login successful.");
+
+        var token = _userService.GenerateJwtToken(user, _configuration);
+        return Ok("Login successful. Here's the token : " + token);
     }
 
     [HttpGet("{id}")]
@@ -48,5 +52,16 @@ public class UserController : ControllerBase
             return NotFound("User not found.");
         }
         return Ok(user);
+    }
+
+    [HttpGet("token")]
+    public Task<IActionResult> GetTokenInfo()
+    {
+        foreach (var claim in User.Claims)
+        {
+            Console.WriteLine($"Claim type: {claim.Type}, value: {claim.Value}");
+        }
+
+        return Task.FromResult<IActionResult>(Ok("Check console for token claims."));
     }
 }

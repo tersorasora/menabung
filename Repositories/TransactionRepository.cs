@@ -22,6 +22,7 @@ public class TransactionRepository : ITransactionRepository
     public async Task<List<Transaction>> GetTransactionsByUserIdAsync(int userId)
     {
         return await _context.transactions
+            .Include(t => t.user)
             .Where(t => t.user_id == userId)
             .ToListAsync();
     }

@@ -3,6 +3,8 @@ using Models;
 using data;
 using Microsoft.AspNetCore.Identity;
 using Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Controllers;
 
@@ -17,10 +19,13 @@ public class TransactionController : ControllerBase
         _transactionServices = transactionServices;
     }
 
+    [Authorize]
     [HttpPost("add")]
-    public async Task<IActionResult> AddTransaction([FromBody] Transaction transaction)
+    public async Task<IActionResult> AddTransaction([FromBody] Transaction request)
     {
-        var result = await _transactionServices.AddTransactions(transaction.transaction_type, transaction.transaction_nominal, transaction.user_id);
+        var userIdToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        Console.Error.WriteLine("User ID from token: " + userIdToken);
+        var result = await _transactionServices.AddTransactions(request.transaction_type, request.transaction_nominal, userIdToken);
         if (!result)
         {
             return BadRequest("Failed to add transaction.");

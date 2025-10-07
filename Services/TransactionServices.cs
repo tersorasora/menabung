@@ -19,7 +19,7 @@ public class TransactionServices : ITransactionServices
             transaction_type = type,
             transaction_nominal = nominal,
             user_id = user_id,
-            transaction_time = DateTime.UtcNow
+            transaction_date = DateTime.UtcNow
         };
 
         try

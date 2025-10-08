@@ -22,7 +22,7 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] User user)
     {
-        var result = await _userService.RegisterUserAsync(user.username, user.password);
+        var result = await _userService.RegisterUserAsync(user.username, user.nickname, user.password);
         if (!result)
         {
             return BadRequest("Registration failed.");
@@ -40,7 +40,16 @@ public class UserController : ControllerBase
         }
 
         var token = _userService.GenerateJwtToken(user, _configuration);
-        return Ok("Login successful. Here's the token : " + token);
+        // Return JSON with token and user info
+        return Ok(new 
+        { 
+            token, 
+            user = new 
+            {
+                id = user.user_id,
+                nickname = user.nickname
+            } 
+        });
     }
 
     [HttpGet("{id}")]

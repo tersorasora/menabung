@@ -17,12 +17,12 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<bool> RegisterUserAsync(string username, string password)
+    public async Task<bool> RegisterUserAsync(string username, string nickname, string password)
     {
         var user = new User
         {
             username = username,
-            nickname = username,
+            nickname = nickname,
             password = password,
             balance = 0.0f
         };

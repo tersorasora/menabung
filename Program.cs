@@ -12,12 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDBContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// accept case sensitive JSON
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNameCaseInsensitive = false;
+});
+
 // Add CORS policy and allow frontend access
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // React Vite default port
+        policy.WithOrigins(
+            "http://localhost:5173", // React Vite default port
+            "http://localhost:5008"  // Blazor Server default port
+            ) 
               .WithExposedHeaders("Authorization")
               .AllowAnyHeader()
               .AllowAnyMethod();

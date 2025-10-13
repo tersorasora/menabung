@@ -33,6 +33,7 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] User loginRequest)
     {
+        Console.WriteLine($"Login attempt for user: {loginRequest.username} {loginRequest.password}");
         var user = await _userService.LoginUserAsync(loginRequest.username, loginRequest.password);
         if (user == null)
         {

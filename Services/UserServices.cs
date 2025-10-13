@@ -66,7 +66,8 @@ public class UserService : IUserService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.user_id.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, user.username)
+            new Claim(JwtRegisteredClaimNames.UniqueName, user.username),
+            new Claim(JwtRegisteredClaimNames.Nickname, user.nickname),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not found in configuration")));

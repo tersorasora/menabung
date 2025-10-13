@@ -3,6 +3,7 @@ using Models;
 using data;
 using Microsoft.AspNetCore.Identity;
 using Services;
+using System.Xml.XPath;
 
 namespace Controllers;
 
@@ -23,11 +24,11 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Register([FromBody] User user)
     {
         var result = await _userService.RegisterUserAsync(user.username, user.nickname, user.password);
-        if (!result)
+        if (!result.Success)
         {
-            return BadRequest("Registration failed.");
+            return BadRequest("Registration failed : " + result.Error);
         }
-        return Ok("User registered successfully.");
+        return Ok(new { Message = "User registered successfully." });
     }
 
     [HttpPost("login")]

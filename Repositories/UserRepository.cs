@@ -15,6 +15,12 @@ public class UserRepository : IUserRepository
 
     public async Task AddUser(User user)
     {
+        // check same username exists
+        var existingUser = await _context.users.FirstOrDefaultAsync(u => u.username == user.username);
+        if (existingUser != null)
+        {
+            throw new Exception("Username already exists");
+        }
         _context.users.Add(user);
         await _context.SaveChangesAsync();
     }

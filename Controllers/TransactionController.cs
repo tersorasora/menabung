@@ -39,9 +39,21 @@ public class TransactionController : ControllerBase
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         Console.Error.WriteLine("User ID from token: " + userId);
         var transaction = await _transactionServices.GetTransactionsByUserIdAsync(userId);
-        if (transaction == null || transaction.Count == 0) {
+        if (transaction == null || transaction.Count == 0)
+        {
             return NotFound("No transactions found for this user.");
         }
         return Ok(transaction);
+    }
+
+    [HttpGet("byid/{id}")]
+    public async Task<IActionResult> GetTransactionById(int id)
+    {
+        var transaction = await _transactionServices.GetTransactionsByUserIdAsync(id);
+        if (transaction == null || !transaction.Any())
+        {
+            return NotFound(new { Message = "Transaction not found." });
+        }
+        return Ok(new { transaction });
     }
 }

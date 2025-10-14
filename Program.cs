@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+// using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -10,7 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add DB Context with PostgreSQL
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreServer_Default")));
+
+// Add DB Context with SQL Server
+// builder.Services.AddDbContext<AppDBContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer_Default")));
 
 // accept case sensitive JSON
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>

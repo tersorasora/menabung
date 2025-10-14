@@ -65,6 +65,15 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    [HttpGet("balance/{id}")]
+    public async Task<IActionResult> GetUserBalance(int id)
+    {
+        Console.WriteLine($"Fetching balance for user ID: {id}");
+        var balance = await _userService.GetUserBalanceAsync(id);
+        Console.WriteLine($"User ID: {id}, Balance: {balance}");
+        return Ok(new { balance });
+    }
+
     [HttpGet("token")]
     public Task<IActionResult> GetTokenInfo()
     {

@@ -52,4 +52,86 @@ public class TransactionServices : ITransactionServices
     {
         return _transactionRepository.GetTransactionsByUserIdAsync(userId);
     }
+
+    public async Task<bool> EditTransaction(int transactionId, string description, string type, float nominal)
+    {
+        var transactions = await _transactionRepository.GetTransactionsByUserIdAsync(transactionId);
+        var transaction = transactions.FirstOrDefault(t => t.transaction_id == transactionId);
+        if (transaction == null)
+        {
+            return false;
+        }
+
+        var userBalance = await _userRepository.GetUserBalanceAsync(transaction.user_id);
+
+        // Revert the old transaction effect
+        if (transaction.transaction_type == "deposit")
+        {
+            userBalance -= transaction.transaction_nominal;
+        }
+        else
+        {
+            userBalance += transaction.transaction_nominal;
+        }
+
+        // Apply the new transaction effect
+        if (type == "deposit")
+        {
+            userBalance += nominal;
+        }
+        else
+        {
+            userBalance -= nominal;
+        }
+
+        transaction.description = description;
+        transaction.transaction_type = type;
+        transaction.transaction_nominal = nominal;
+
+        try
+        {
+            await _transactionRepository.EditTransaction(transaction);
+            await _userRepository.UpdateUserBalanceAsync(transaction.user_id, userBalance);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error editing transaction: {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteTransaction(int transactionId)
+    {
+        var transactions = await _transactionRepository.GetTransactionsByUserIdAsync(transactionId);
+        var transaction = transactions.FirstOrDefault(t => t.transaction_id == transactionId);
+        if (transaction == null)
+        {
+            return false;
+        }
+
+        var userBalance = await _userRepository.GetUserBalanceAsync(transaction.user_id);
+
+        // Revert the transaction effect
+        if (transaction.transaction_type == "deposit")
+        {
+            userBalance -= transaction.transaction_nominal;
+        }
+        else
+        {
+            userBalance += transaction.transaction_nominal;
+        }
+
+        try
+        {
+            await _transactionRepository.DeleteTransaction(transactionId);
+            await _userRepository.UpdateUserBalanceAsync(transaction.user_id, userBalance);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting transaction: {ex.Message}");
+            return false;
+        }
+    }
 }

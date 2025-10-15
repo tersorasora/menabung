@@ -26,4 +26,20 @@ public class TransactionRepository : ITransactionRepository
             .Where(t => t.user_id == userId)
             .ToListAsync();
     }
+
+    public async Task EditTransaction(Transaction transaction)
+    {
+        _context.transactions.Update(transaction);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteTransaction(int transactionId)
+    {
+        var transaction = await _context.transactions.FindAsync(transactionId);
+        if (transaction != null)
+        {
+            _context.transactions.Remove(transaction);
+            await _context.SaveChangesAsync();
+        }
+    }
 }

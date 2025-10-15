@@ -56,4 +56,26 @@ public class TransactionController : ControllerBase
         }
         return Ok(new { transaction });
     }
+
+    [HttpPut("edit/{id}")]
+    public async Task<IActionResult> EditTransaction(int id, [FromBody] Transaction request)
+    {
+        var result = await _transactionServices.EditTransaction(id, request.description, request.transaction_type, request.transaction_nominal);
+        if (!result)
+        {
+            return BadRequest("Failed to edit transaction.");
+        }
+        return Ok("Transaction edited successfully.");
+    }
+
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteTransaction(int tid)
+    {
+        var result = await _transactionServices.DeleteTransaction(tid);
+        if (!result)
+        {
+            return BadRequest("Failed to delete transaction.");
+        }
+        return Ok("Transaction deleted successfully.");
+    }
 }

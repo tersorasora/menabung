@@ -27,6 +27,12 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync();
     }
 
+    public async Task<Transaction?> GetTransactionByIdAsync(int transactionId)
+    {
+        Console.WriteLine($"Fetching transaction with ID: {transactionId}");
+        return await _context.transactions.FindAsync(transactionId);
+    }
+
     public async Task EditTransaction(Transaction transaction)
     {
         _context.transactions.Update(transaction);

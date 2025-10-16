@@ -69,9 +69,9 @@ public class TransactionController : ControllerBase
     }
 
     [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> DeleteTransaction(int tid)
+    public async Task<IActionResult> DeleteTransaction(int id)
     {
-        var result = await _transactionServices.DeleteTransaction(tid);
+        var result = await _transactionServices.DeleteTransaction(id);
         if (!result)
         {
             return BadRequest("Failed to delete transaction.");

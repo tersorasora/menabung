@@ -103,14 +103,17 @@ public class TransactionServices : ITransactionServices
 
     public async Task<bool> DeleteTransaction(int transactionId)
     {
-        var transactions = await _transactionRepository.GetTransactionsByUserIdAsync(transactionId);
-        var transaction = transactions.FirstOrDefault(t => t.transaction_id == transactionId);
+        var transaction = await _transactionRepository.GetTransactionByIdAsync(transactionId);
         if (transaction == null)
         {
+            Console.WriteLine("Null mas e");
             return false;
         }
 
+        Console.WriteLine("Ora Null mas e");
+
         var userBalance = await _userRepository.GetUserBalanceAsync(transaction.user_id);
+        Console.WriteLine($"Current user id : {transaction.user_id}");
 
         // Revert the transaction effect
         if (transaction.transaction_type == "deposit")

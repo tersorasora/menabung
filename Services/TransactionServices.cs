@@ -14,7 +14,7 @@ public class TransactionServices : ITransactionServices
         _userRepository = userRepository;
     }
 
-    public async Task<bool> AddTransactions(string description, string type, decimal nominal, int user_id)
+    public async Task<bool> AddTransactions(string description, string type, decimal nominal, DateTime date, int user_id)
     {
         var transaction = new Transaction
         {
@@ -22,7 +22,7 @@ public class TransactionServices : ITransactionServices
             transaction_type = type,
             transaction_nominal = nominal,
             user_id = user_id,
-            transaction_date = DateTime.UtcNow
+            transaction_date = date
         };
 
         var userBalance = await _userRepository.GetUserBalanceAsync(user_id);

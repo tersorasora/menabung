@@ -5,7 +5,7 @@ namespace Services;
 
 public interface ITransactionServices
 {
-    Task<bool> AddTransactions(string description, string type, decimal nominal, int user_id);
+    Task<bool> AddTransactions(string description, string type, decimal nominal, DateTime date, int user_id);
     Task<List<Transaction>> GetAllTransactionsAsync();
     Task<List<Transaction>> GetTransactionsByUserIdAsync(int userId);
     Task<bool> EditTransaction(int transactionId, string description, string type, decimal nominal);

@@ -14,8 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 //     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreServer_Default")));
 
 // Add DB Context with SQL Server
+// builder.Services.AddDbContext<AppDBContext>(options =>
+//     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer_Default")));
+
+// Add DB Context for Production with SQL Server
 builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer_Default")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer_Production")));
 
 // accept case sensitive JSON
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
@@ -75,20 +79,5 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
-    try
-    {
-        db.Database.OpenConnection();
-        Console.WriteLine("✅ Database connected successfully!");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"❌ Connection failed: {ex.Message}");
-    }
-}
-
 
 app.Run();

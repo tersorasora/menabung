@@ -42,6 +42,7 @@ public class UserController : ControllerBase
         }
 
         var token = _userService.GenerateJwtToken(user, _configuration);
+        // Test
         // Return JSON with token and user info
         return Ok(new 
         { 

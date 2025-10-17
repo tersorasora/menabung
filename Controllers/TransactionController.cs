@@ -33,6 +33,17 @@ public class TransactionController : ControllerBase
         return Ok("Transaction added successfully.");
     }
 
+    [HttpGet("GetAll")]
+    public async Task<IActionResult> GetAllTransactions()
+    {
+        var transactions = await _transactionServices.GetAllTransactionsAsync();
+        if (transactions == null || transactions.Count == 0)
+        {
+            return NotFound("No transactions found.");
+        }
+        return Ok(transactions);
+    }
+
     [HttpGet("user")]
     public async Task<IActionResult> GetTransactionsByUserID()
     {

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-// using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -10,12 +10,12 @@ using Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add DB Context with PostgreSQL
-builder.Services.AddDbContext<AppDBContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreServer_Default")));
+// builder.Services.AddDbContext<AppDBContext>(options =>
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreServer_Default")));
 
 // Add DB Context with SQL Server
-// builder.Services.AddDbContext<AppDBContext>(options =>
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer_Default")));
+builder.Services.AddDbContext<AppDBContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer_Default")));
 
 // accept case sensitive JSON
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
@@ -74,6 +74,21 @@ app.UseCors("AllowFrontend");
 // app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();  
+app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+    try
+    {
+        db.Database.OpenConnection();
+        Console.WriteLine("✅ Database connected successfully!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Connection failed: {ex.Message}");
+    }
+}
+
 
 app.Run();

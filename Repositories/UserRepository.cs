@@ -35,7 +35,7 @@ public class UserRepository : IUserRepository
         return await _context.users.FirstOrDefaultAsync(u => u.username == username && u.password == password);
     }
 
-    public async Task<bool> UpdateUserBalanceAsync(int userId, float newBalance)
+    public async Task<bool> UpdateUserBalanceAsync(int userId, decimal newBalance)
     {
         var user = await _context.users.FindAsync(userId);
         if (user == null) return false;
@@ -45,9 +45,9 @@ public class UserRepository : IUserRepository
         return true;
     }
 
-    public async Task<float> GetUserBalanceAsync(int userId)
+    public async Task<decimal> GetUserBalanceAsync(int userId)
     {
         var user = await _context.users.FindAsync(userId);
-        return user?.balance ?? 0.0f;
+        return user?.balance ?? 0;
     }
 }

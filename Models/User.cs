@@ -9,5 +9,5 @@ public class User
     public string username { get; set; } = string.Empty;
     public string nickname { get; set; } = string.Empty;
     public string password { get; set; } = string.Empty;
-    public float balance { get; set; } = 0.0f;
+    public decimal balance { get; set; } = 0;
 }

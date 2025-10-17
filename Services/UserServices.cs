@@ -24,7 +24,7 @@ public class UserService : IUserService
             username = username,
             nickname = nickname,
             password = password,
-            balance = 0.0f
+            balance = 0
         };
 
         try
@@ -54,7 +54,7 @@ public class UserService : IUserService
         return await _userRepository.GetUserByIdAsync(userId);
     }
 
-    public async Task<float> GetUserBalanceAsync(int userId)
+    public async Task<decimal> GetUserBalanceAsync(int userId)
     {
         return await _userRepository.GetUserBalanceAsync(userId);
     }

@@ -19,6 +19,13 @@ public class TransactionRepository : ITransactionRepository
         await _context.SaveChangesAsync();
     }
 
+    public async Task<List<Transaction>> GetAllTransactionsAsync()
+    {
+        return await _context.transactions
+            .Include(t => t.user)
+            .ToListAsync();
+    }
+
     public async Task<List<Transaction>> GetTransactionsByUserIdAsync(int userId)
     {
         return await _context.transactions

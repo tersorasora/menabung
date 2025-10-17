@@ -14,7 +14,7 @@ public class TransactionServices : ITransactionServices
         _userRepository = userRepository;
     }
 
-    public async Task<bool> AddTransactions(string description, string type, float nominal, int user_id)
+    public async Task<bool> AddTransactions(string description, string type, decimal nominal, int user_id)
     {
         var transaction = new Transaction
         {
@@ -24,7 +24,7 @@ public class TransactionServices : ITransactionServices
             user_id = user_id,
             transaction_date = DateTime.UtcNow
         };
-        
+
         var userBalance = await _userRepository.GetUserBalanceAsync(user_id);
         if (type == "deposit")
         {
@@ -47,13 +47,18 @@ public class TransactionServices : ITransactionServices
             return false;
         }
     }
+    
+    public Task<List<Transaction>> GetAllTransactionsAsync()
+    {
+        return _transactionRepository.GetAllTransactionsAsync();
+    }
 
     public Task<List<Transaction>> GetTransactionsByUserIdAsync(int userId)
     {
         return _transactionRepository.GetTransactionsByUserIdAsync(userId);
     }
 
-    public async Task<bool> EditTransaction(int transactionId, string description, string type, float nominal)
+    public async Task<bool> EditTransaction(int transactionId, string description, string type, decimal nominal)
     {
         var transactions = await _transactionRepository.GetTransactionsByUserIdAsync(transactionId);
         var transaction = transactions.FirstOrDefault(t => t.transaction_id == transactionId);

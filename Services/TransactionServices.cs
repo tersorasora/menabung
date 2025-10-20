@@ -22,7 +22,7 @@ public class TransactionServices : ITransactionServices
             transaction_type = type,
             transaction_nominal = nominal,
             user_id = user_id,
-            transaction_date = date
+            transaction_date = DateTime.SpecifyKind(date, DateTimeKind.Utc)
         };
 
         var userBalance = await _userRepository.GetUserBalanceAsync(user_id);

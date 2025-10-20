@@ -44,7 +44,9 @@ public class TransactionServices : ITransactionServices
         catch (Exception ex)
         {
             Console.WriteLine($"Error adding transaction: {ex.Message}");
-            return false;
+            Console.WriteLine("Full Exception: " + ex.ToString());
+            throw;
+            // return false;
         }
     }
     

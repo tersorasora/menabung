@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Repositories;
 
@@ -41,12 +42,23 @@ public class TransactionServices : ITransactionServices
             await _userRepository.UpdateUserBalanceAsync(user_id, userBalance);
             return true;
         }
+        catch (DbUpdateException dbEx)
+        {
+            // This gets the real inner exception from PostgreSQL
+            var sqlEx = dbEx.InnerException;
+            Console.WriteLine("DbUpdateException occurred:");
+            Console.WriteLine("Message: " + dbEx.Message);
+            if (sqlEx != null)
+            {
+                Console.WriteLine("Inner Exception: " + sqlEx.Message);
+                Console.WriteLine("Full Inner Exception: " + sqlEx.ToString());
+            }
+            throw; // or return a BadRequest with details while testing
+        }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error adding transaction: {ex.Message}");
-            Console.WriteLine("Full Exception: " + ex.ToString());
+            Console.WriteLine("Other Exception: " + ex.ToString());
             throw;
-            // return false;
         }
     }
     

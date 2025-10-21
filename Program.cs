@@ -39,7 +39,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
             "http://localhost:5173", // React Vite default port
             "http://localhost:5008",  // Blazor Server default port
-            "http://localhost:5078"   // Blazor WebAssembly default port
+            "http://localhost:5078",   // Blazor WebAssembly default port
+            "https://menabung-front-end-webassembly.pages.dev" // Blazor WebAssembly Deployment port
             ) 
               .WithExposedHeaders("Authorization")
               .AllowAnyHeader()

@@ -17,14 +17,16 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<(bool Success, string? Error)> RegisterUserAsync(string username, string nickname, string password)
+    public async Task<(bool Success, string? Error)> RegisterUserAsync(string email, string nickname, string password)
     {
         var user = new User
         {
-            username = username,
+            email = email,
             nickname = nickname,
             password = password,
-            balance = 0
+            balance = 0,
+            banned = false,
+            role_id = 2 // Default role_id for regular members
         };
 
         try
@@ -39,14 +41,25 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<User?> LoginUserAsync(string username, string password)
+    public async Task<(User?, string message)> LoginUserAsync(string email, string password)
     {
-        var user = await _userRepository.GetByUsernameAndPasswordAsync(username, password);
-        if (user != null)
+        var user = await _userRepository.GetByEmailAndPasswordAsync(email, password);
+        if (user == null)
         {
-            return user;
+            return (null, "Invalid email or password");
         }
-        return null;
+
+        if (user.banned)
+        {
+            return (null, "User is banned");
+        }
+
+        return (user, "Login successful");
+    }
+
+    public async Task<List<User>> GetAllUsersAsync()
+    {
+        return await _userRepository.GetAllUsersAsync();
     }
 
     public async Task<User?> GetUserByIdAsync(int userId)
@@ -54,9 +67,34 @@ public class UserService : IUserService
         return await _userRepository.GetUserByIdAsync(userId);
     }
 
+    public async Task<int> GetUserRoleIdAsync(int userId)
+    {
+        var user = await _userRepository.GetUserByIdAsync(userId);
+        return user?.role_id ?? 0;
+    }
+
     public async Task<decimal> GetUserBalanceAsync(int userId)
     {
         return await _userRepository.GetUserBalanceAsync(userId);
+    }
+
+    public async Task<bool> UpdateUserAsync(User user)
+    {
+        try
+        {
+            await _userRepository.EditUser(user);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error updating user: " + ex.Message);
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteUserAsync(int userId)
+    {
+        return await _userRepository.DeleteUserAsync(userId);
     }
     
     public string GenerateJwtToken(User user, IConfiguration configuration)
@@ -66,7 +104,6 @@ public class UserService : IUserService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.user_id.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, user.username),
             new Claim(JwtRegisteredClaimNames.Nickname, user.nickname),
         };
 

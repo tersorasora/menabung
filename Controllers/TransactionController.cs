@@ -24,7 +24,6 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> AddTransaction([FromBody] Transaction request)
     {
         var userIdToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        Console.Error.WriteLine("User ID from token: " + userIdToken);
         var result = await _transactionServices.AddTransactions(request.description, request.transaction_type, request.transaction_nominal, request.transaction_date, userIdToken);
         if (!result)
         {
@@ -33,7 +32,7 @@ public class TransactionController : ControllerBase
         return Ok("Transaction added successfully.");
     }
 
-    [HttpGet("GetAll")]
+    [HttpGet("GetAllTransactions")]
     public async Task<IActionResult> GetAllTransactions()
     {
         var transactions = await _transactionServices.GetAllTransactionsAsync();
@@ -48,7 +47,6 @@ public class TransactionController : ControllerBase
     public async Task<IActionResult> GetTransactionsByUserID()
     {
         var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        Console.Error.WriteLine("User ID from token: " + userId);
         var transaction = await _transactionServices.GetTransactionsByUserIdAsync(userId);
         if (transaction == null || transaction.Count == 0)
         {
@@ -66,6 +64,13 @@ public class TransactionController : ControllerBase
             return NotFound(new { Message = "Transaction not found." });
         }
         return Ok(new { transaction });
+    }
+
+    [HttpGet("CountUserTransactions/{userId}")]
+    public async Task<IActionResult> CountUserTransactions(int userId)
+    {
+        var count = await _transactionServices.CountUserTransactionsAsync(userId);
+        return Ok(new { total_transactions = count });
     }
 
     [HttpPut("edit/{id}")]

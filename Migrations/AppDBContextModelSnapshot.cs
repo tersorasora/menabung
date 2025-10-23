@@ -22,6 +22,23 @@ namespace MeNabung.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Models.Roles", b =>
+                {
+                    b.Property<int>("role_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("role_id"));
+
+                    b.Property<string>("role_name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("role_id");
+
+                    b.ToTable("roles");
+                });
+
             modelBuilder.Entity("Models.Transaction", b =>
                 {
                     b.Property<int>("transaction_id")
@@ -65,6 +82,13 @@ namespace MeNabung.Migrations
                     b.Property<decimal>("balance")
                         .HasColumnType("numeric");
 
+                    b.Property<bool>("banned")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("nickname")
                         .IsRequired()
                         .HasColumnType("text");
@@ -73,11 +97,12 @@ namespace MeNabung.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("username")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("role_id")
+                        .HasColumnType("integer");
 
                     b.HasKey("user_id");
+
+                    b.HasIndex("role_id");
 
                     b.ToTable("users");
                 });
@@ -91,6 +116,17 @@ namespace MeNabung.Migrations
                         .IsRequired();
 
                     b.Navigation("user");
+                });
+
+            modelBuilder.Entity("Models.User", b =>
+                {
+                    b.HasOne("Models.Roles", "role")
+                        .WithMany()
+                        .HasForeignKey("role_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("role");
                 });
 #pragma warning restore 612, 618
         }

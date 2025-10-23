@@ -4,6 +4,8 @@ using data;
 using Microsoft.AspNetCore.Identity;
 using Services;
 using System.Xml.XPath;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Controllers;
 
@@ -23,7 +25,7 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] User user)
     {
-        var result = await _userService.RegisterUserAsync(user.username, user.nickname, user.password);
+        var result = await _userService.RegisterUserAsync(user.email, user.nickname, user.password);
         if (!result.Success)
         {
             return BadRequest("Registration failed : " + result.Error);
@@ -34,25 +36,37 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] User loginRequest)
     {
-        Console.WriteLine($"Login attempt for user: {loginRequest.username} {loginRequest.password}");
-        var user = await _userService.LoginUserAsync(loginRequest.username, loginRequest.password);
+        Console.WriteLine($"Login attempt for user: {loginRequest.email} {loginRequest.password}");
+        var (user, message) = await _userService.LoginUserAsync(loginRequest.email, loginRequest.password);
         if (user == null)
         {
-            return Unauthorized("Invalid username or password.");
+            return Unauthorized(message);
         }
 
         var token = _userService.GenerateJwtToken(user, _configuration);
         // Test
         // Return JSON with token and user info
-        return Ok(new 
-        { 
-            token, 
-            user = new 
+        return Ok(new
+        {
+            token,
+            user = new
             {
                 id = user.user_id,
                 nickname = user.nickname
-            } 
+            }
         });
+    }
+
+
+    [HttpGet("getAllUsers")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _userService.GetAllUsersAsync();
+        if(users == null || users.Count == 0)
+        {
+            return NotFound("No users found.");
+        }
+        return Ok(users);
     }
 
     [HttpGet("{id}")]
@@ -69,10 +83,41 @@ public class UserController : ControllerBase
     [HttpGet("balance/{id}")]
     public async Task<IActionResult> GetUserBalance(int id)
     {
-        Console.WriteLine($"Fetching balance for user ID: {id}");
         var balance = await _userService.GetUserBalanceAsync(id);
-        Console.WriteLine($"User ID: {id}, Balance: {balance}");
         return Ok(new { balance });
+    }
+
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateUser([FromBody] User user)
+    {
+        var result = await _userService.UpdateUserAsync(user);
+        if (!result)
+        {
+            return BadRequest("Failed to update user.");
+        }
+        return Ok("User updated successfully.");
+    }
+
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        var result = await _userService.DeleteUserAsync(id);
+        if (!result)
+        {
+            return BadRequest("Failed to delete user.");
+        }
+        return Ok("User deleted successfully.");
+    }
+
+    [HttpGet("getRole/{id}")]
+    public async Task<IActionResult> GetUserRole(int id)
+    {
+        var roleId = await _userService.GetUserRoleIdAsync(id);
+        if (roleId == 0)
+        {
+            return NotFound("User role not found.");
+        }
+        return Ok(new { role_id = roleId });
     }
 
     [HttpGet("token")]

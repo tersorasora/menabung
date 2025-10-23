@@ -36,8 +36,12 @@ public class TransactionRepository : ITransactionRepository
 
     public async Task<Transaction?> GetTransactionByIdAsync(int transactionId)
     {
-        Console.WriteLine($"Fetching transaction with ID: {transactionId}");
         return await _context.transactions.FindAsync(transactionId);
+    }
+
+    public async Task<int> CountUserTransactionsAsync(int userId)
+    {
+        return await _context.transactions.CountAsync(t => t.user_id == userId);
     }
 
     public async Task EditTransaction(Transaction transaction)

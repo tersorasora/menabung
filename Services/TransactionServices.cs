@@ -72,6 +72,11 @@ public class TransactionServices : ITransactionServices
         return _transactionRepository.GetTransactionsByUserIdAsync(userId);
     }
 
+    public Task<int> CountUserTransactionsAsync(int userId)
+    {
+        return _transactionRepository.CountUserTransactionsAsync(userId);
+    }
+
     public async Task<bool> EditTransaction(int transactionId, string description, string type, decimal nominal)
     {
         var transactions = await _transactionRepository.GetTransactionsByUserIdAsync(transactionId);
@@ -125,14 +130,10 @@ public class TransactionServices : ITransactionServices
         var transaction = await _transactionRepository.GetTransactionByIdAsync(transactionId);
         if (transaction == null)
         {
-            Console.WriteLine("Null mas e");
             return false;
         }
 
-        Console.WriteLine("Ora Null mas e");
-
         var userBalance = await _userRepository.GetUserBalanceAsync(transaction.user_id);
-        Console.WriteLine($"Current user id : {transaction.user_id}");
 
         // Revert the transaction effect
         if (transaction.transaction_type == "deposit")

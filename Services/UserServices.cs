@@ -92,6 +92,34 @@ public class UserService : IUserService
         }
     }
 
+    public async Task<bool> BanUserAsync(int userId)
+    {
+        try
+        {
+            await _userRepository.BanUser(userId);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error banning user: " + ex.Message);
+            return false;
+        }
+    }
+
+    public async Task<bool> UnbanUserAsync(int userId)
+    {
+        try
+        {
+            await _userRepository.UnbanUser(userId);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error banning user: " + ex.Message);
+            return false;
+        }
+    }
+
     public async Task<bool> DeleteUserAsync(int userId)
     {
         return await _userRepository.DeleteUserAsync(userId);
@@ -105,6 +133,7 @@ public class UserService : IUserService
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.user_id.ToString()),
             new Claim(JwtRegisteredClaimNames.Nickname, user.nickname),
+            new Claim("role_id", user.role_id.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new InvalidOperationException("JWT Key not found in configuration")));

@@ -78,7 +78,12 @@ builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
         IssuerSigningKey = new SymmetricSecurityKey(jwtKey)
     };
 });
-builder.Services.AddAuthorization();
+// builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireClaim("role_id", "1"));
+});
 
 // Port configuration for cloud deployment
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
@@ -88,6 +93,7 @@ var app = builder.Build();
 
 app.UseCors("AllowFrontend");
 // app.UseHttpsRedirection();
+app.UseMiddleware<BannedUserMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -12,6 +12,8 @@ public interface IUserService
     Task<int> GetUserRoleIdAsync(int userId);
     Task<decimal> GetUserBalanceAsync(int userId);
     Task<bool> UpdateUserAsync(User user);
+    Task<bool> BanUserAsync(int userId);
+    Task<bool> UnbanUserAsync(int userId);
     Task<bool> DeleteUserAsync(int userId);
     string GenerateJwtToken(User user, IConfiguration configuration);
 }

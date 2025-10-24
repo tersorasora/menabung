@@ -27,7 +27,7 @@ public class UserRepository : IUserRepository
 
     public async Task<List<User>> GetAllUsersAsync()
     {
-        return await _context.users.ToListAsync();
+        return await _context.users.OrderBy(u => u.user_id).ToListAsync();
     }
 
     public async Task<User?> GetUserByIdAsync(int userId)
@@ -51,6 +51,26 @@ public class UserRepository : IUserRepository
         existingUser.nickname = user.nickname;
         existingUser.password = user.password;
 
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task BanUser(int userId)
+    {
+        var user = await _context.users.FindAsync(userId);
+        if (user == null)
+            throw new Exception("User not found");
+
+        user.banned = true;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UnbanUser(int userId)
+    {
+        var user = await _context.users.FindAsync(userId);
+        if (user == null)
+            throw new Exception("User not found");
+
+        user.banned = false;
         await _context.SaveChangesAsync();
     }
 

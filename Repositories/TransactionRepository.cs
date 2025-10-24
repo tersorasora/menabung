@@ -21,7 +21,7 @@ public class TransactionRepository : ITransactionRepository
 
     public async Task<List<Transaction>> GetAllTransactionsAsync()
     {
-        return await _context.transactions
+        return await _context.transactions.OrderBy(t => t.transaction_id)
             .Include(t => t.user)
             .ToListAsync();
     }
@@ -31,6 +31,7 @@ public class TransactionRepository : ITransactionRepository
         return await _context.transactions
             .Include(t => t.user)
             .Where(t => t.user_id == userId)
+            .OrderBy(t => t.transaction_id)
             .ToListAsync();
     }
 

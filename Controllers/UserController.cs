@@ -52,7 +52,8 @@ public class UserController : ControllerBase
             user = new
             {
                 id = user.user_id,
-                nickname = user.nickname
+                nickname = user.nickname,
+                role_id = user.role_id
             }
         });
     }
@@ -96,6 +97,30 @@ public class UserController : ControllerBase
             return BadRequest("Failed to update user.");
         }
         return Ok("User updated successfully.");
+    }
+
+    [Authorize(Policy = "AdminOnly")] // Only admin can ban users
+    [HttpPut("ban/{id}")]
+    public async Task<IActionResult> BanUser(int id)
+    {
+        var result = await _userService.BanUserAsync(id);
+        if (!result)
+        {
+            return BadRequest("Failed to ban user.");
+        }
+        return Ok("User banned successfully.");
+    }
+
+    [Authorize(Policy = "AdminOnly")] // Only admin can unban users
+    [HttpPut("unban/{id}")]
+    public async Task<IActionResult> UnbanUser(int id)
+    {
+        var result = await _userService.UnbanUserAsync(id);
+        if (!result)
+        {
+            return BadRequest("Failed to unban user.");
+        }
+        return Ok("User unbanned successfully.");
     }
 
     [HttpDelete("delete/{id}")]

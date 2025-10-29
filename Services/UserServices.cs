@@ -103,6 +103,11 @@ public class UserService : IUserService
     {
         try
         {
+            var existingUser = await _userRepository.GetUserByIdAsync(user.user_id);
+            if(user.password != null && !user.password.Equals(existingUser?.password))
+            {
+                user.password = HashPassword(user, user.password);
+            }
             await _userRepository.EditUser(user);
             return true;
         }

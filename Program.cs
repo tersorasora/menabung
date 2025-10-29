@@ -93,8 +93,8 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Port configuration for cloud deployment
-// var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-// builder.WebHost.UseUrls($"http://*:{port}");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
 
 var app = builder.Build();
 

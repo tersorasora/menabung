@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MeNabung")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+496cb325ad839c8804daba277187c9b9b0497f62")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dfbdaba46d247e763f00112484087bd58a85ed31")]
 [assembly: System.Reflection.AssemblyProductAttribute("MeNabung")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MeNabung")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

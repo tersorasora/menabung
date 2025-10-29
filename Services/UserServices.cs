@@ -2,6 +2,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 using Models;
 using Repositories;
@@ -11,23 +12,27 @@ namespace Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, IPasswordHasher<User> passwordHasher)
     {
         _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
     }
 
-    public async Task<(bool Success, string? Error)> RegisterUserAsync(string email, string nickname, string password)
+    public async Task<(bool Success, string? Error)> RegisterUserAsync(string username, string nickname, string password)
     {
         var user = new User
         {
-            email = email,
+            username = username,
             nickname = nickname,
             password = password,
             balance = 0,
             banned = false,
             role_id = 2 // Default role_id for regular members
         };
+
+        user.password = HashPassword(user, password);
 
         try
         {
@@ -41,12 +46,28 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<(User?, string message)> LoginUserAsync(string email, string password)
+    public string HashPassword(User user, string password)
     {
-        var user = await _userRepository.GetByEmailAndPasswordAsync(email, password);
+        return _passwordHasher.HashPassword(user, password);
+    }
+
+    public PasswordVerificationResult VerifyPassword(User user, string providedPassword)
+    {
+        return _passwordHasher.VerifyHashedPassword(user, user.password, providedPassword);
+    }
+
+    public async Task<(User?, string message)> LoginUserAsync(string username, string password)
+    {
+        var user = await _userRepository.GetByUsernameAsync(username);
         if (user == null)
         {
-            return (null, "Invalid email or password");
+            return (null, "Username Not Registered");
+        }
+
+        var verificationResult = VerifyPassword(user, password);
+        if(verificationResult != PasswordVerificationResult.Success)
+        {
+            return (null, "Invalid password");
         }
 
         if (user.banned)

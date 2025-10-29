@@ -12,7 +12,7 @@ using data;
 namespace MeNabung.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20251023085848_Initial")]
+    [Migration("20251029015804_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -40,6 +40,34 @@ namespace MeNabung.Migrations
                     b.HasKey("role_id");
 
                     b.ToTable("roles");
+                });
+
+            modelBuilder.Entity("Models.ToDoList", b =>
+                {
+                    b.Property<int>("todolist_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("todolist_id"));
+
+                    b.Property<string>("objective")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("todolist_date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("todolist_status")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("user_id")
+                        .HasColumnType("integer");
+
+                    b.HasKey("todolist_id");
+
+                    b.HasIndex("user_id");
+
+                    b.ToTable("toDoList");
                 });
 
             modelBuilder.Entity("Models.Transaction", b =>
@@ -88,10 +116,6 @@ namespace MeNabung.Migrations
                     b.Property<bool>("banned")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("nickname")
                         .IsRequired()
                         .HasColumnType("text");
@@ -103,11 +127,26 @@ namespace MeNabung.Migrations
                     b.Property<int>("role_id")
                         .HasColumnType("integer");
 
+                    b.Property<string>("username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("user_id");
 
                     b.HasIndex("role_id");
 
                     b.ToTable("users");
+                });
+
+            modelBuilder.Entity("Models.ToDoList", b =>
+                {
+                    b.HasOne("Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Models.Transaction", b =>

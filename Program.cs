@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using System.Text;
 using data;
 using Repositories;
 using Services;
+using Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +43,7 @@ builder.Services.AddCors(options =>
             "http://localhost:5008",  // Blazor Server default port
             "http://localhost:5078",   // Blazor WebAssembly default port
             "https://menabung-front-end-webassembly.pages.dev" // Blazor WebAssembly Deployment port
-            ) 
+            )
               .WithExposedHeaders("Authorization")
               .AllowAnyHeader()
               .AllowAnyMethod();
@@ -52,11 +54,16 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IToDoListRepository, ToDoListRepository>();
 
 // Add Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionServices, TransactionServices>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IToDoListService, ToDoListService>();
+
+// Hashed Service
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // Add Controllers
 builder.Services.AddControllers();
@@ -86,8 +93,8 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Port configuration for cloud deployment
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-builder.WebHost.UseUrls($"http://*:{port}");
+// var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+// builder.WebHost.UseUrls($"http://*:{port}");
 
 var app = builder.Build();
 

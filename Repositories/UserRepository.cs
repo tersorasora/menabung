@@ -15,11 +15,11 @@ public class UserRepository : IUserRepository
 
     public async Task AddUser(User user)
     {
-        // check same emai exists
-        var existingUser = await _context.users.FirstOrDefaultAsync(u => u.email == user.email);
+        // check same username exists
+        var existingUser = await _context.users.FirstOrDefaultAsync(u => u.username == user.username);
         if (existingUser != null)
         {
-            throw new Exception("Email already exists");
+            throw new Exception("Username already exists");
         }
         _context.users.Add(user);
         await _context.SaveChangesAsync();
@@ -35,9 +35,9 @@ public class UserRepository : IUserRepository
         return await _context.users.FindAsync(userId);
     }
 
-    public async Task<User?> GetByEmailAndPasswordAsync(string email, string password)
+    public async Task<User?> GetByUsernameAsync(string username)
     {
-        return await _context.users.FirstOrDefaultAsync(u => u.email == email && u.password == password);
+        return await _context.users.FirstOrDefaultAsync(u => u.username == username);
     }
 
     public async Task EditUser(User user)

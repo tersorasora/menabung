@@ -31,7 +31,7 @@ namespace MeNabung.Migrations
                 {
                     user_id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    email = table.Column<string>(type: "text", nullable: false),
+                    username = table.Column<string>(type: "text", nullable: false),
                     nickname = table.Column<string>(type: "text", nullable: false),
                     password = table.Column<string>(type: "text", nullable: false),
                     banned = table.Column<bool>(type: "boolean", nullable: false),
@@ -46,6 +46,28 @@ namespace MeNabung.Migrations
                         column: x => x.role_id,
                         principalTable: "roles",
                         principalColumn: "role_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "toDoList",
+                columns: table => new
+                {
+                    todolist_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    objective = table.Column<string>(type: "text", nullable: false),
+                    todolist_status = table.Column<bool>(type: "boolean", nullable: false),
+                    todolist_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_toDoList", x => x.todolist_id);
+                    table.ForeignKey(
+                        name: "FK_toDoList_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "user_id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -73,6 +95,11 @@ namespace MeNabung.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_toDoList_user_id",
+                table: "toDoList",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_transactions_user_id",
                 table: "transactions",
                 column: "user_id");
@@ -86,6 +113,9 @@ namespace MeNabung.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "toDoList");
+
             migrationBuilder.DropTable(
                 name: "transactions");
 

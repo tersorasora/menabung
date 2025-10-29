@@ -10,4 +10,5 @@ public class AppDBContext : DbContext
     public DbSet<User> users { get; set; }
     public DbSet<Transaction> transactions { get; set; }
     public DbSet<Roles> roles { get; set; }
+    public DbSet<ToDoList> toDoList { get; set; }
 }

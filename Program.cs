@@ -55,12 +55,14 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IToDoListRepository, ToDoListRepository>();
+builder.Services.AddScoped<IInvestRepository, InvestRepository>();
 
 // Add Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITransactionServices, TransactionServices>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IToDoListService, ToDoListService>();
+builder.Services.AddScoped<IInvestServices, InvestServices>();
 
 // Hashed Service
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

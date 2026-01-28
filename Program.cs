@@ -95,10 +95,16 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Port configuration for cloud deployment
-// var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-// builder.WebHost.UseUrls($"http://*:{port}");
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://*:{port}");
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+    db.Database.Migrate();
+}
 
 app.UseCors("AllowFrontend");
 // app.UseHttpsRedirection();

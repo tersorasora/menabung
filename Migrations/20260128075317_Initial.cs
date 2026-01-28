@@ -50,6 +50,31 @@ namespace MeNabung.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "invests",
+                columns: table => new
+                {
+                    invest_id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    invest_type = table.Column<string>(type: "text", nullable: false),
+                    quantity = table.Column<decimal>(type: "numeric", nullable: false),
+                    quantity_type = table.Column<string>(type: "text", nullable: false),
+                    price = table.Column<decimal>(type: "numeric", nullable: false),
+                    date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    is_sell = table.Column<bool>(type: "boolean", nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_invests", x => x.invest_id);
+                    table.ForeignKey(
+                        name: "FK_invests_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "toDoList",
                 columns: table => new
                 {
@@ -95,6 +120,11 @@ namespace MeNabung.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_invests_user_id",
+                table: "invests",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_toDoList_user_id",
                 table: "toDoList",
                 column: "user_id");
@@ -113,6 +143,9 @@ namespace MeNabung.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "invests");
+
             migrationBuilder.DropTable(
                 name: "toDoList");
 

@@ -12,8 +12,8 @@ using data;
 namespace MeNabung.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20260128035457_TableInvestments")]
-    partial class TableInvestments
+    [Migration("20260128075317_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
